@@ -36,35 +36,6 @@ export function cloneGame(game: Game) {
   return clonedGame;
 }
 
-export function checkVerticalAxis({
-  changedCell,
-  game,
-  cellsToConnect,
-  checkedColor,
-}: {
-  changedCell: CellPosition;
-  game: Game;
-  cellsToConnect: number;
-  checkedColor: Color;
-}) {
-  const { col, row } = changedCell;
-  const connectedCells: CellPosition[] = [];
-
-  for (let i = row; i < game[col].length; i++) {
-    if (connectedCells.length === cellsToConnect) break;
-
-    const cell = game[changedCell.col][i];
-    if (cell.color === checkedColor) {
-      connectedCells.push({ col: changedCell.col, row: i });
-      continue;
-    }
-
-    return false;
-  }
-
-  return connectedCells;
-}
-
 export function checkForConnect({
   changedCell,
   cellsToConnect,
