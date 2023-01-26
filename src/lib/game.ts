@@ -67,35 +67,67 @@ export function checkVerticalAxis({
 
 export function checkForConnect({
   changedCell,
-  rows,
   cellsToConnect,
   game,
 }: {
   changedCell: CellPosition & { color: Color };
-  rows: number;
   cellsToConnect: number;
   game: Game;
 }) {
-  const couldConnectVertical = changedCell.row <= rows - cellsToConnect;
-  if (couldConnectVertical) {
-    const connectedVertical = checkVerticalAxis({
-      cellsToConnect,
-      changedCell,
-      checkedColor: changedCell.color,
-      game,
-    });
+  const { col, row, color } = changedCell;
+  const rows = game[0].length;
+  const cols = game.length;
+  let connectedCells: CellPosition[] = [];
 
-    if (connectedVertical) {
-      connectedVertical.forEach(
-        (cell) =>
-          (game[cell.col][cell.row] = {
-            ...game[cell.col][cell.row],
-            highlight: true,
-          })
-      );
-      return game;
-    }
+  if (checkVerticalAxis() || checkHorizontalAxis()) {
+    highlightConnectedCells();
+    console.log({ connectedCells, game });
+    return game;
   }
 
   return false;
+
+  function checkVerticalAxis() {
+    const couldConnectVertical = changedCell.row <= rows - cellsToConnect;
+    if (!couldConnectVertical) return false;
+
+    for (let i = row; i < game[col].length; i++) {
+      const cell = game[changedCell.col][i];
+      if (cell.color === color) {
+        connectedCells.push({ col, row: i });
+        if (connectedCells.length === cellsToConnect) return true;
+        continue;
+      }
+
+      connectedCells = [];
+      break;
+    }
+
+    return false;
+  }
+
+  function checkHorizontalAxis() {
+    for (let i = 0; i < cols; i++) {
+      const cell = game[i][row];
+      if (cell.color === color) {
+        connectedCells.push({ col: i, row });
+        if (connectedCells.length === cellsToConnect) return true;
+        continue;
+      }
+
+      connectedCells = [];
+    }
+
+    return false;
+  }
+
+  function highlightConnectedCells() {
+    connectedCells.forEach(
+      (cell) =>
+        (game[cell.col][cell.row] = {
+          ...game[cell.col][cell.row],
+          highlight: true,
+        })
+    );
+  }
 }

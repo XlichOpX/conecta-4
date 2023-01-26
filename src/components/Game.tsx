@@ -59,7 +59,6 @@ export function Game() {
 
     const finishedGame = checkForConnect({
       changedCell,
-      rows,
       cellsToConnect,
       game: newGame,
     });
