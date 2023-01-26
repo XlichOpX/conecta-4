@@ -74,14 +74,17 @@ export function checkForConnect({
   cellsToConnect: number;
   game: Game;
 }) {
-  const { col, row, color } = changedCell;
   const rows = game[0].length;
   const cols = game.length;
   let connectedCells: CellPosition[] = [];
 
-  if (checkVerticalAxis() || checkHorizontalAxis()) {
+  if (
+    checkVerticalAxis() ||
+    checkHorizontalAxis() ||
+    checkTopToBottomDiagonalAxis() ||
+    checkBottomToTopDiagonalAxis()
+  ) {
     highlightConnectedCells();
-    console.log({ connectedCells, game });
     return game;
   }
 
@@ -91,10 +94,10 @@ export function checkForConnect({
     const couldConnectVertical = changedCell.row <= rows - cellsToConnect;
     if (!couldConnectVertical) return false;
 
-    for (let i = row; i < game[col].length; i++) {
+    for (let i = changedCell.row; i < game[changedCell.col].length; i++) {
       const cell = game[changedCell.col][i];
-      if (cell.color === color) {
-        connectedCells.push({ col, row: i });
+      if (cell.color === changedCell.color) {
+        connectedCells.push({ col: changedCell.col, row: i });
         if (connectedCells.length === cellsToConnect) return true;
         continue;
       }
@@ -107,10 +110,63 @@ export function checkForConnect({
   }
 
   function checkHorizontalAxis() {
+    connectedCells = [];
     for (let i = 0; i < cols; i++) {
-      const cell = game[i][row];
-      if (cell.color === color) {
-        connectedCells.push({ col: i, row });
+      const cell = game[i][changedCell.row];
+      if (cell.color === changedCell.color) {
+        connectedCells.push({ col: i, row: changedCell.row });
+        if (connectedCells.length === cellsToConnect) return true;
+        continue;
+      }
+
+      connectedCells = [];
+    }
+
+    return false;
+  }
+
+  function checkTopToBottomDiagonalAxis() {
+    connectedCells = [];
+    const cellDiff = changedCell.row - changedCell.col;
+    const diagonalStartCell = {
+      col: cellDiff >= 0 ? 0 : Math.abs(cellDiff),
+      row: cellDiff >= 0 ? cellDiff : 0,
+    };
+
+    for (
+      let c = diagonalStartCell.col, r = diagonalStartCell.row;
+      c < cols && r < rows;
+      c++, r++
+    ) {
+      const cell = game[c][r];
+      if (cell.color === changedCell.color) {
+        connectedCells.push({ col: c, row: r });
+        if (connectedCells.length === cellsToConnect) return true;
+        continue;
+      }
+
+      connectedCells = [];
+    }
+
+    return false;
+  }
+
+  function checkBottomToTopDiagonalAxis() {
+    connectedCells = [];
+    const cellSum = changedCell.row + changedCell.col;
+    const diagonalStartCell = {
+      col: cellSum >= cols ? cols - 1 : cellSum,
+      row: cellSum - (cols - 1) >= 0 ? cellSum - (cols - 1) : 0,
+    };
+
+    for (
+      let c = diagonalStartCell.col, r = diagonalStartCell.row;
+      c >= 0 && r < rows;
+      c--, r++
+    ) {
+      const cell = game[c][r];
+      if (cell.color === changedCell.color) {
+        connectedCells.push({ col: c, row: r });
         if (connectedCells.length === cellsToConnect) return true;
         continue;
       }

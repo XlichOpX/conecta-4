@@ -21,8 +21,8 @@ export function Cell({
         state.highlight && "ring-2 ring-white"
       )}
     >
-      {row}
       {col}
+      {row}
     </div>
   );
 }
