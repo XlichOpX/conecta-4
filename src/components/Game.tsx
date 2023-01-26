@@ -1,17 +1,20 @@
-import clsx from "clsx";
 import { useState } from "react";
 import {
+  CellState,
+  checkForConnect,
+  cloneGame,
+  colors,
+  getInitialGame,
   Player,
   players,
-  CellState,
-  getInitialGame,
-  colors,
 } from "../lib/game";
 import { Cell } from "./Cell";
+import { PlayerAvatar } from "./PlayerAvatar";
 
 const cols = 7;
 const rows = 6;
 const totalCells = cols * rows;
+const cellsToConnect = 4;
 
 export function Game() {
   const [currentPlayer, setCurrentPlayer] = useState<Player>(players.yellow);
@@ -20,8 +23,10 @@ export function Game() {
     getInitialGame({ cols, rows })
   );
 
+  const [winner, setWinner] = useState<Player | null>(null);
+
   function handleClick(col: number) {
-    if (remainingCells === 0) return;
+    if (remainingCells === 0 || winner) return;
 
     const isColFull = game[col][0].color !== colors.none;
     if (isColFull) return;
@@ -37,7 +42,9 @@ export function Game() {
   }
 
   function addChipToCol(col: number) {
-    const newGame = [...game];
+    const newGame = cloneGame(game);
+
+    let changedCell = { col, row: rows - 1, color: currentPlayer.color };
     for (let i = newGame[col].length - 1; i >= 0; i--) {
       const cell = newGame[col][i];
       if (cell.color === colors.none) {
@@ -45,10 +52,23 @@ export function Game() {
           ...newGame[col][i],
           color: currentPlayer.color,
         };
+        changedCell = { col, row: i, color: currentPlayer.color };
         break;
       }
     }
-    setGame(newGame);
+
+    const finishedGame = checkForConnect({
+      changedCell,
+      rows,
+      cellsToConnect,
+      game: newGame,
+    });
+
+    if (finishedGame) {
+      setWinner(currentPlayer);
+    }
+
+    setGame(finishedGame || newGame);
     setRemainingCells(remainingCells - 1);
     togglePlayer();
   }
@@ -56,24 +76,24 @@ export function Game() {
   function resetGame() {
     setGame(() => getInitialGame({ cols, rows }));
     setRemainingCells(totalCells);
+    setWinner(null);
   }
 
   return (
     <>
       <p aria-live="polite" className="flex items-center gap-2">
-        {remainingCells > 0 ? (
-          <>
-            <span>Turno del jugador: {currentPlayer.name}</span>
-            <span
-              className={clsx(
-                "h-5 w-5 border border-slate-900",
-                currentPlayer.color === colors.red && "bg-red-500",
-                currentPlayer.color === colors.yellow && "bg-yellow-300"
-              )}
-            />
-          </>
-        ) : (
-          <span>¡Empate!</span>
+        {!winner && remainingCells > 0 && (
+          <span>
+            Turno del jugador: <PlayerAvatar player={currentPlayer} />
+          </span>
+        )}
+
+        {!winner && remainingCells === 0 && <span>¡Empate!</span>}
+
+        {winner && (
+          <span>
+            ¡Ha ganado el jugador: <PlayerAvatar player={winner} />!
+          </span>
         )}
       </p>
 
