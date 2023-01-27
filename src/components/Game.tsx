@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  addChipToCol,
   CellState,
   checkForConnect,
   cloneGame,
@@ -31,7 +32,7 @@ export function Game() {
     const isColFull = game[col][0].color !== colors.none;
     if (isColFull) return;
 
-    addChipToCol(col);
+    addChip(col);
   }
 
   function togglePlayer() {
@@ -41,21 +42,14 @@ export function Game() {
     setCurrentPlayer(players.yellow);
   }
 
-  function addChipToCol(col: number) {
+  function addChip(col: number) {
     const newGame = cloneGame(game);
 
-    let changedCell = { col, row: rows - 1, color: currentPlayer.color };
-    for (let i = newGame[col].length - 1; i >= 0; i--) {
-      const cell = newGame[col][i];
-      if (cell.color === colors.none) {
-        newGame[col][i] = {
-          ...newGame[col][i],
-          color: currentPlayer.color,
-        };
-        changedCell = { col, row: i, color: currentPlayer.color };
-        break;
-      }
-    }
+    const changedCell = addChipToCol({
+      col,
+      game: newGame,
+      color: currentPlayer.color,
+    });
 
     const finishedGame = checkForConnect({
       changedCell,

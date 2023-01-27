@@ -36,6 +36,30 @@ export function cloneGame(game: Game) {
   return clonedGame;
 }
 
+export function addChipToCol({
+  col,
+  game,
+  color,
+}: {
+  col: number;
+  game: Game;
+  color: Color;
+}) {
+  let changedCell = { col, row: game[0].length - 1, color };
+  for (let i = game[col].length - 1; i >= 0; i--) {
+    const cell = game[col][i];
+    if (cell.color === colors.none) {
+      game[col][i] = {
+        ...game[col][i],
+        color,
+      };
+      changedCell = { col, row: i, color };
+      break;
+    }
+  }
+  return changedCell;
+}
+
 export function checkForConnect({
   changedCell,
   cellsToConnect,
