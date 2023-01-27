@@ -1,9 +1,20 @@
 import { clsx } from "clsx";
 import { colors, Player } from "../lib/game";
 
-export function PlayerAvatar({ player }: { player: Player }) {
+export function PlayerAvatar({
+  player,
+  reverse = false,
+}: {
+  player: Player;
+  reverse?: boolean;
+}) {
   return (
-    <span className="inline-flex items-center gap-2">
+    <span
+      className={clsx(
+        "inline-flex items-center gap-2",
+        reverse && "flex-row-reverse"
+      )}
+    >
       {player.name}
       <span
         className={clsx(
