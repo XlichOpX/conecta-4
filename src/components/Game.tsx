@@ -13,6 +13,8 @@ import {
 } from "../lib/game";
 import { Cell } from "./Cell";
 import { PlayerAvatar } from "./PlayerAvatar";
+import moveAudio from "../assets/sounds/move.wav";
+import winAudio from "../assets/sounds/win.wav";
 
 const cols = 7;
 const rows = 6;
@@ -29,6 +31,8 @@ export function Game() {
   const [scores, setScores] = useState({ yellow: 0, red: 0 });
   const [hintedCell, setHintedCell] = useState<CellPosition | null>(null);
   const [winner, setWinner] = useState<Player | null>(null);
+  const moveAudioRef = useRef<HTMLAudioElement>(null);
+  const winAudioRef = useRef<HTMLAudioElement>(null);
 
   function handleClick(col: number) {
     if (remainingCells === 0 || winner) return;
@@ -37,6 +41,11 @@ export function Game() {
     if (isColFull) return;
 
     addChip(col);
+
+    if (moveAudioRef.current) {
+      moveAudioRef.current.currentTime = 0;
+      moveAudioRef.current.play();
+    }
   }
 
   function togglePlayer() {
@@ -67,6 +76,7 @@ export function Game() {
         ...scores,
         [currentPlayer.color]: scores[currentPlayer.color] + 1,
       });
+      winAudioRef.current?.play();
     }
 
     setGame(finishedGame || newGame);
@@ -178,6 +188,9 @@ export function Game() {
             Reiniciar marcador
           </button>
         </div>
+
+        <audio src={moveAudio} ref={moveAudioRef}></audio>
+        <audio src={winAudio} ref={winAudioRef}></audio>
       </div>
     </>
   );
