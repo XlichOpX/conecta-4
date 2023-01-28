@@ -36,8 +36,23 @@ export function cloneGame(game: Game) {
   return clonedGame;
 }
 
-export function addChipToCol({
+export function getNextChipPosition({
   col,
+  game,
+}: {
+  col: number;
+  game: Game;
+}) {
+  for (let row = game[col].length - 1; row >= 0; row--) {
+    const cell = game[col][row];
+    if (cell.color === colors.none) {
+      return [col, row] as const;
+    }
+  }
+}
+
+export function addChipToCol({
+  col: targetCol,
   game,
   color,
 }: {
@@ -45,19 +60,17 @@ export function addChipToCol({
   game: Game;
   color: Color;
 }) {
-  let changedCell = { col, row: game[0].length - 1, color };
-  for (let i = game[col].length - 1; i >= 0; i--) {
-    const cell = game[col][i];
-    if (cell.color === colors.none) {
-      game[col][i] = {
-        ...game[col][i],
-        color,
-      };
-      changedCell = { col, row: i, color };
-      break;
-    }
-  }
-  return changedCell;
+  const nextChipPosition = getNextChipPosition({ col: targetCol, game });
+  if (!nextChipPosition) throw new Error("Couldn't get next chip position");
+
+  const [col, row] = nextChipPosition;
+
+  game[col][row] = {
+    ...game[col][row],
+    color,
+  };
+
+  return { ...game[col][row], col, row };
 }
 
 export function checkForConnect({

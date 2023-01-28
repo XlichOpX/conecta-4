@@ -1,11 +1,13 @@
 import { useState } from "react";
 import {
   addChipToCol,
+  CellPosition,
   CellState,
   checkForConnect,
   cloneGame,
   colors,
   getInitialGame,
+  getNextChipPosition,
   Player,
   players,
 } from "../lib/game";
@@ -24,6 +26,7 @@ export function Game() {
     getInitialGame({ cols, rows })
   );
   const [scores, setScores] = useState({ yellow: 0, red: 0 });
+  const [hintedCell, setHintedCell] = useState<CellPosition | null>(null);
 
   const [winner, setWinner] = useState<Player | null>(null);
 
@@ -69,6 +72,7 @@ export function Game() {
     setGame(finishedGame || newGame);
     setRemainingCells(remainingCells - 1);
     togglePlayer();
+    setHintedCell({ col, row: changedCell.row - 1 });
   }
 
   function resetGame() {
@@ -79,6 +83,13 @@ export function Game() {
 
   function resetScores() {
     setScores({ red: 0, yellow: 0 });
+  }
+
+  function hintNextChip(targetCol: number) {
+    const nextChipPosition = getNextChipPosition({ col: targetCol, game });
+    if (!nextChipPosition) return;
+    const [col, row] = nextChipPosition;
+    setHintedCell({ col, row });
   }
 
   return (
@@ -121,8 +132,10 @@ export function Game() {
           {game.map((col, colIndex) => (
             <button
               key={colIndex}
-              className="flex flex-col gap-2"
+              className="group flex flex-col gap-2"
               onClick={() => handleClick(colIndex)}
+              onMouseEnter={() => hintNextChip(colIndex)}
+              onMouseLeave={() => setHintedCell(null)}
             >
               {col.map((cell, rowIndex) => (
                 <Cell
@@ -130,6 +143,12 @@ export function Game() {
                   state={cell}
                   col={colIndex}
                   row={rowIndex}
+                  hint={
+                    !winner &&
+                    hintedCell?.col === colIndex &&
+                    hintedCell.row === rowIndex
+                  }
+                  currentPlayerColor={currentPlayer.color}
                 />
               ))}
             </button>
