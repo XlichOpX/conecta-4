@@ -149,7 +149,7 @@ export function Game() {
           {game.map((col, colIndex) => (
             <button
               key={colIndex}
-              className="group flex flex-col gap-2"
+              className="group flex flex-col gap-2 lg:gap-4"
               onClick={() => handleClick(colIndex)}
               onMouseEnter={() => hintNextChip(colIndex)}
               onMouseLeave={() => setHintedCell(null)}
