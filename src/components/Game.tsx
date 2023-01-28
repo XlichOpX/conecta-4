@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   addChipToCol,
   CellPosition,
@@ -21,13 +21,13 @@ const cellsToConnect = 4;
 
 export function Game() {
   const [currentPlayer, setCurrentPlayer] = useState<Player>(players.yellow);
+  const lastPlayer = useRef<Player>(players.yellow);
   const [remainingCells, setRemainingCells] = useState(totalCells);
   const [game, setGame] = useState<CellState[][]>(() =>
     getInitialGame({ cols, rows })
   );
   const [scores, setScores] = useState({ yellow: 0, red: 0 });
   const [hintedCell, setHintedCell] = useState<CellPosition | null>(null);
-
   const [winner, setWinner] = useState<Player | null>(null);
 
   function handleClick(col: number) {
@@ -79,6 +79,13 @@ export function Game() {
     setGame(() => getInitialGame({ cols, rows }));
     setRemainingCells(totalCells);
     setWinner(null);
+    if (lastPlayer.current === players.yellow) {
+      setCurrentPlayer(players.red);
+      lastPlayer.current = players.red;
+    } else {
+      setCurrentPlayer(players.yellow);
+      lastPlayer.current = players.yellow;
+    }
   }
 
   function resetScores() {
@@ -159,9 +166,11 @@ export function Game() {
           <button
             className="rounded bg-slate-800 p-2 text-white"
             onClick={resetGame}
+            disabled={remainingCells === totalCells}
           >
             Reiniciar juego
           </button>
+
           <button
             className="rounded bg-slate-800 p-2 text-white"
             onClick={resetScores}
