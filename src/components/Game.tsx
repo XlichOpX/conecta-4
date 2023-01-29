@@ -189,8 +189,8 @@ export function Game() {
           </button>
         </div>
 
-        <audio src={moveAudio} ref={moveAudioRef}></audio>
-        <audio src={winAudio} ref={winAudioRef}></audio>
+        <audio src={moveAudio} ref={moveAudioRef} preload="auto"></audio>
+        <audio src={winAudio} ref={winAudioRef} preload="auto"></audio>
       </div>
     </>
   );
