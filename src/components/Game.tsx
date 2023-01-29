@@ -25,9 +25,7 @@ export function Game() {
   const [currentPlayer, setCurrentPlayer] = useState<Player>(players.yellow);
   const lastPlayer = useRef<Player>(players.yellow);
   const [remainingCells, setRemainingCells] = useState(totalCells);
-  const [game, setGame] = useState<CellState[][]>(() =>
-    getInitialGame({ cols, rows })
-  );
+  const [game, setGame] = useState<CellState[][]>(() => getInitialGame({ cols, rows }));
   const [scores, setScores] = useState({ yellow: 0, red: 0 });
   const [hintedCell, setHintedCell] = useState<CellPosition | null>(null);
   const [winner, setWinner] = useState<Player | null>(null);
@@ -114,9 +112,7 @@ export function Game() {
       <div className="flex w-auto flex-col gap-3">
         <div className="flex flex-col items-center justify-between gap-3 lg:flex-row">
           <div>
-            <h1 className="mb-2 text-center text-3xl font-bold lg:text-left">
-              Conecta 4
-            </h1>
+            <h1 className="mb-2 text-center text-3xl font-bold lg:text-left">Conecta 4</h1>
             <p aria-live="polite" className="flex items-center gap-2">
               {!winner && remainingCells > 0 && (
                 <span>
@@ -160,11 +156,7 @@ export function Game() {
                   state={cell}
                   col={colIndex}
                   row={rowIndex}
-                  hint={
-                    !winner &&
-                    hintedCell?.col === colIndex &&
-                    hintedCell.row === rowIndex
-                  }
+                  hint={!winner && hintedCell?.col === colIndex && hintedCell.row === rowIndex}
                   currentPlayerColor={currentPlayer.color}
                 />
               ))}
@@ -181,10 +173,7 @@ export function Game() {
             Reiniciar juego
           </button>
 
-          <button
-            className="rounded bg-slate-800 p-2 text-white"
-            onClick={resetScores}
-          >
+          <button className="rounded bg-slate-800 p-2 text-white" onClick={resetScores}>
             Reiniciar marcador
           </button>
         </div>

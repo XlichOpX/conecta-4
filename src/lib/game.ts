@@ -36,13 +36,7 @@ export function cloneGame(game: Game) {
   return clonedGame;
 }
 
-export function getNextChipPosition({
-  col,
-  game,
-}: {
-  col: number;
-  game: Game;
-}) {
+export function getNextChipPosition({ col, game }: { col: number; game: Game }) {
   for (let row = game[col].length - 1; row >= 0; row--) {
     const cell = game[col][row];
     if (cell.color === colors.none) {
@@ -141,11 +135,7 @@ export function checkForConnect({
       row: cellDiff >= 0 ? cellDiff : 0,
     };
 
-    for (
-      let c = diagonalStartCell.col, r = diagonalStartCell.row;
-      c < cols && r < rows;
-      c++, r++
-    ) {
+    for (let c = diagonalStartCell.col, r = diagonalStartCell.row; c < cols && r < rows; c++, r++) {
       const cell = game[c][r];
       if (cell.color === changedCell.color) {
         connectedCells.push({ col: c, row: r });
@@ -167,11 +157,7 @@ export function checkForConnect({
       row: cellSum - (cols - 1) >= 0 ? cellSum - (cols - 1) : 0,
     };
 
-    for (
-      let c = diagonalStartCell.col, r = diagonalStartCell.row;
-      c >= 0 && r < rows;
-      c--, r++
-    ) {
+    for (let c = diagonalStartCell.col, r = diagonalStartCell.row; c >= 0 && r < rows; c--, r++) {
       const cell = game[c][r];
       if (cell.color === changedCell.color) {
         connectedCells.push({ col: c, row: r });
