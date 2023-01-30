@@ -15,6 +15,7 @@ import { Cell } from "./Cell";
 import { PlayerAvatar } from "./PlayerAvatar";
 import moveAudio from "../assets/sounds/move.wav";
 import winAudio from "../assets/sounds/win.wav";
+import confetti from "canvas-confetti";
 
 const cols = 7;
 const rows = 6;
@@ -75,6 +76,7 @@ export function Game() {
         [currentPlayer.color]: scores[currentPlayer.color] + 1,
       });
       winAudioRef.current?.play();
+      confetti({ particleCount: 150, spread: 80 });
     }
 
     setGame(finishedGame || newGame);
