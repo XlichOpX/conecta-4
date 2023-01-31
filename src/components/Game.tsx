@@ -16,6 +16,8 @@ import { PlayerAvatar } from "./PlayerAvatar";
 import moveAudio from "../assets/sounds/move.wav";
 import winAudio from "../assets/sounds/win.wav";
 import confetti from "canvas-confetti";
+import { ResetScoreIcon } from "./ResetScoreIcon";
+import { ResetGameIcon } from "./ResetGameIcon";
 
 const cols = 7;
 const rows = 6;
@@ -168,15 +170,20 @@ export function Game() {
 
         <div className="flex justify-between">
           <button
-            className="rounded bg-slate-800 p-2 text-white"
+            className="rounded-md bg-slate-800 p-2 text-white hover:bg-slate-700 active:scale-95 disabled:cursor-not-allowed"
             onClick={resetGame}
             disabled={remainingCells === totalCells}
+            title="Reiniciar juego"
           >
-            Reiniciar juego
+            <ResetGameIcon className="h-6 w-6 lg:h-10 lg:w-10" />
           </button>
 
-          <button className="rounded bg-slate-800 p-2 text-white" onClick={resetScores}>
-            Reiniciar marcador
+          <button
+            className="rounded-md bg-slate-800 p-2 text-white hover:bg-slate-700 active:scale-95"
+            onClick={resetScores}
+            title="Reiniciar marcador"
+          >
+            <ResetScoreIcon className="h-6 w-6 lg:h-10 lg:w-10" />
           </button>
         </div>
 

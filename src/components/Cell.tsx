@@ -15,7 +15,7 @@ export function Cell({
   return (
     <div
       className={clsx(
-        "md:border-3 flex h-8 w-8 items-center justify-center rounded-full font-bold text-white transition-all duration-150 ease-in sm:h-10 sm:w-10 md:h-16 md:w-16",
+        "md:border-3 flex h-9 w-9 items-center justify-center rounded-full font-bold text-white transition-all duration-150 ease-in sm:h-10 sm:w-10 md:h-16 md:w-16",
         !state.highlight && "border-2 border-slate-300",
         state.color === colors.none && "bg-gradient-to-t from-white/10 to-black/10",
         state.color === colors.yellow && "bg-yellow-300",
