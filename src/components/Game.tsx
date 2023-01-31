@@ -25,8 +25,8 @@ const totalCells = cols * rows;
 const cellsToConnect = 4;
 
 export function Game() {
-  const [currentPlayer, setCurrentPlayer] = useState<Player>(players.yellow);
-  const lastPlayer = useRef<Player>(players.yellow);
+  const [currentPlayer, setCurrentPlayer] = useState<Player>(players.red);
+  const lastPlayer = useRef<Player>(players.red);
   const [remainingCells, setRemainingCells] = useState(totalCells);
   const [game, setGame] = useState<CellState[][]>(() => getInitialGame({ cols, rows }));
   const [scores, setScores] = useState({ yellow: 0, red: 0 });
